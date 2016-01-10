@@ -1,14 +1,10 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
-```{r, echo=TRUE}
+
+```r
 # download data
 #fil<-"https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
 
@@ -27,11 +23,11 @@ activity_obj<-activity_obj[!is.na(activity_obj$steps),]
 # remove zero data rows
 #no_zero_rows <- activity_obj[activity_obj$steps>0,]
 no_zero_rows <- activity_obj
-
 ```
 
 ## What is mean total number of steps taken per day?
-```{r,echo=TRUE}
+
+```r
 # calculate total steps per day
 total_steps_per_day  <- tapply(activity_obj_copy$steps, activity_obj_copy$date, sum)
 
@@ -42,25 +38,50 @@ var_num_mean <- mean(total_steps_per_day,na.rm=TRUE)
 var_num_median<-median(total_steps_per_day,na.rm=TRUE)
 ```
 ###mean total steps per day:
-```{r,echo=FALSE} 
-print(var_num_mean )
+
+```
+## [1] 10766.19
 ```
 ###median total steps per day:
-```{r,echo=FALSE} 
-print(var_num_median )
+
+```
+## [1] 10765
 ```
 
 ## What is the average daily activity pattern?
-```{r,echo=TRUE}
+
+```r
 #histogram of total number of steps
 var_disp_hist <- hist(total_steps_per_day,main="Total Steps",xlab='Total Steps (Per Day)',col='blue')
-
 ```
 
-```{r,echo=FALSE}
-print(var_disp_hist)
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+
+
 ```
-```{r,echo=TRUE}
+## $breaks
+## [1]     0  5000 10000 15000 20000 25000
+## 
+## $counts
+## [1]  5 12 28  6  2
+## 
+## $density
+## [1] 1.886792e-05 4.528302e-05 1.056604e-04 2.264151e-05 7.547170e-06
+## 
+## $mids
+## [1]  2500  7500 12500 17500 22500
+## 
+## $xname
+## [1] "total_steps_per_day"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+```
+
+```r
 # get average steps by interval
 average_steps_by_interval <- aggregate(no_zero_rows$steps,by=list(no_zero_rows$interval),mean)
 
@@ -82,12 +103,11 @@ var_disp_g<-ggplot(average_steps_by_interval) +
        y=expression("Average Steps")) +
   labs(title=expression("Average Steps Per Interval per Day"))
 ```
-```{r,echo=FALSE}
-print(var_disp_g)
-```
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
 ## Imputing missing values
-```{r,echo=TRUE}
+
+```r
 #report number of rows na
 var_num_rows_na<-is.na(activity_obj_copy$steps)
 
@@ -111,14 +131,37 @@ total_steps_per_day2  <- tapply(activity_obj_steps_na$steps, activity_obj_steps_
 var_disp_hist2 <- hist(total_steps_per_day2,main="Total Steps",xlab='Total Steps (Per Day)',col='orange')
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
+
 There is a noticeable change in the data when filling NA with the average daily mean. It would definitely inflate results undesirably.
 
-```{r,echo=FALSE}
-print(var_disp_hist2)
+
+```
+## $breaks
+## [1]     0  5000 10000 15000 20000 25000
+## 
+## $counts
+## [1]  5 12 36  6  2
+## 
+## $density
+## [1] 1.639344e-05 3.934426e-05 1.180328e-04 1.967213e-05 6.557377e-06
+## 
+## $mids
+## [1]  2500  7500 12500 17500 22500
+## 
+## $xname
+## [1] "total_steps_per_day2"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r,echo=TRUE}
+
+```r
 library(lattice)
 #compare weekdays and weekends
 days <- weekdays(as.Date(activity_obj_steps_na$date))
@@ -136,7 +179,4 @@ var_disp_xyplot<- xyplot(steps ~ interval | day_type,
 ```
 There is a noticeable difference between weekend and weekday.
 
-```{r,echo=FALSE}
-print(var_disp_xyplot)
-
-```
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png) 
